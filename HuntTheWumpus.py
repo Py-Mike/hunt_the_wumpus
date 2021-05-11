@@ -1,10 +1,56 @@
 #HuntTheWumpus.py
-#Written by Pymike
+#Written by Py-Mike
 #Started: 5/10/2021
 #Description: A Hunt the Wumpus Clone in Python
 
 #Imports
 import random
+
+def main():
+    keep_playing = True
+    while keep_playing == True:
+        #Calls the main game function
+        keep_playing = game()
+        if keep_playing == False:
+            break
+        keep_playing = post_game()
+
+def game():
+    #Initialize Game
+    game = game_setup()
+
+    #Start Game Loop
+    while game['gameover'] == False:
+        #Print game screen
+        game_screen(game)
+        
+        #Prompt Player for Action
+        action = input('Shoot, Move, or Quit (S-M-Q)? ')
+        action = action.lower()
+        if action == 's':
+            #take the shooting action
+            shoot(game)
+        elif action == 'm':
+            #take the moving action
+            move(game)
+        elif action == 'q':
+            return False
+        else:
+            print('Incorrect Syntax')
+
+        print('')
+
+def post_game():
+    a = True
+    while a == True:
+        play_again = input('Would you like to play again?(y/n) ')
+        play_again.lower()
+        if play_again == 'y':
+            return True
+        elif play_again == 'n':
+            return False
+        else:
+            continue
 
 def game_setup():
     #Create a dictionary with all the game values
@@ -91,40 +137,16 @@ def move(game):
     if game['player_location'] == game['wumpus_location']:
         wumpus_reaction = random.randint(1,2)
         if wumpus_reaction == 1:
-            print('You have angered the wumpus. It attacks. Game over')
+            print('')
+            print('Game Over: You have angered the wumpus. It attacks.')
             game['gameover'] = True
         else:
             print('You startled the wumpus. It ran away.')
             game['wumpus_location'] = random.randint(1,20)
     if (game['player_location'] == game['pit1_location']) or (game['player_location'] == game['pit2_location']):
-        print('You fell into a bottomless pit. Game over.')
-        game['gameover'] = True
-    
-def game():
-    #Initialize Game
-    game = game_setup()
-
-    #Start Game Loop
-    while game['gameover'] == False:
-        #Print game screen
-        game_screen(game)
-        
-        #Prompt Player for Action
-        action = input('Shoot or Move (S-M)?')
-        action = action.lower()
-        if action == 's':
-            #take the shooting action
-            shoot(game)
-        elif action == 'm':
-            #take the moving action
-            move(game)
-        else:
-            print('Incorrect Syntax')
-
         print('')
-    
-def main():
-    #Calls the main game function
-    game()
+        print('Game Over: You fell into a bottomless pit.')
+        game['gameover'] = True
 
+#Calls the main function to start the game.
 main()
