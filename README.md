@@ -9,10 +9,15 @@ Based on the 1973 game by Gregory Yob.
 * Game Over check for shooting the Wumpus
 * Game Over check for being killed by the Wumpus
 * Bat Teleports
-
+* Added functions
+* Added move input validation
+* Removed Developer information
 
 ## Things that need Fixed
-* No input checking 
-* Currently has Development information printed at the game start
+* Arrow flight
+* Shooting input checking 
 * Multi room arrow flight path checking
-* Needs refactored to feature functions
+
+## Features I might add
+* Brief instructions at the start 
+* The option to quit a hunt without ctrl-c
