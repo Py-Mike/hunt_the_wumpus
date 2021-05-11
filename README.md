@@ -12,12 +12,13 @@ Based on the 1973 game by Gregory Yob.
 * Added functions
 * Added move input validation
 * Removed Developer information
+* Added Quit Option
 
 ## Things that need Fixed
 * Arrow flight
 * Shooting input checking 
 * Multi room arrow flight path checking
+* Double Bat encounter doesnt work
 
 ## Features I might add
 * Brief instructions at the start 
-* The option to quit a hunt without ctrl-c
