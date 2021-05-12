@@ -11,8 +11,12 @@ def main():
     while keep_playing == True:
         #Calls the main game function
         keep_playing = game()
+
+        #Checks to see if the player quit
         if keep_playing == False:
             break
+
+        #Checks to see if wants to keep playing
         keep_playing = post_game()
 
 def game():
@@ -33,6 +37,7 @@ def game():
         elif action == 'm':
             #take the moving action
             move(game)
+            hazards(game)
         elif action == 'q':
             return False
         else:
@@ -100,7 +105,7 @@ def shoot(game):
         room_check = input('Which room #: ')
         if int(room_check) == game['wumpus_location']:
             print('You have slain the wumpus. Congratulations!')
-            gameover = True
+            game['gameover'] = True
             return
         
         else:
@@ -129,17 +134,21 @@ def move(game):
     else:
         game['player_location'] = int(move)
 
+def hazards(game):
     #Check for Hazards
     #Check bats first since they update the player location
     if (game['player_location'] == game['bat1_location']) or (game['player_location'] == game['bat2_location']):
         print('The bats swarm and carry you to a random location.')
         game['player_location'] = random.randint(1,20)
+        hazards(game)
+        return
     if game['player_location'] == game['wumpus_location']:
         wumpus_reaction = random.randint(1,2)
         if wumpus_reaction == 1:
             print('')
             print('Game Over: You have angered the wumpus. It attacks.')
             game['gameover'] = True
+            return
         else:
             print('You startled the wumpus. It ran away.')
             game['wumpus_location'] = random.randint(1,20)
@@ -147,6 +156,7 @@ def move(game):
         print('')
         print('Game Over: You fell into a bottomless pit.')
         game['gameover'] = True
+        return
 
 #Calls the main function to start the game.
 main()
