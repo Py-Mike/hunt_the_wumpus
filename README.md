@@ -13,12 +13,13 @@ Based on the 1973 game by Gregory Yob.
 * Added move input validation
 * Removed Developer information
 * Added Quit Option
+* Fixed double bat encounter
 
 ## Things that need Fixed
 * Arrow flight
 * Shooting input checking 
 * Multi room arrow flight path checking
-* Double Bat encounter doesnt work
 
 ## Features I might add
 * Brief instructions at the start 
+* Scoring & Statistics 
