@@ -63,7 +63,7 @@ def post_game():
 
 def game_setup():
     #Create a dictionary with all the game values
-    game = {'gameover': False, 'arrows': 5, 'player_location': 0, 'wumpus_location': 0,
+    game = {'gameover': False, 'arrows': 5, 'arrow_location': 0, 'player_location': 0, 'wumpus_location': 0,
             'bat1_location': 0, 'bat2_location': 0, 'pit1_location': 0, 'pit2_location': 0,
             1: (2,5,8), 2: (1,3,10), 3: (2,4,12), 4: (3,5,15), 5: (1,4,6), 6: (5,7,15),
             7: (6,8,17), 8: (1,7,9), 9: (8,10,18), 10: (2,9,11), 11: (10,12,19),
@@ -103,30 +103,80 @@ def game_screen(game):
 def shoot(game):
     #First Main Action
     #needs to kill the wumpus, scare the wumpus, chance to ricochet and fly through several rooms
-    arrow_range = input ('How far? [1-5]')
-    arrow_range = int(arrow_range)
-    for a in range(arrow_range):
+    arrow_range = 0
+    
+    arrow_range = input('How far? [1-5]')
+    if arrow_range.isdigit():
+        if int(arrow_range) not in range(1,6):
+            print('Defaulting to max range.')
+            arrow_range = 5
+    else:
+        print('Defaulting to max range.')
+        arrow_range = 5
+    #Set the arrow starting position to the players current position
+    game['arrow_location'] = game['player_location']
+    for a in range(int(arrow_range)):
         room_check = input('Which room #: ')
-        if int(room_check) == game['wumpus_location']:
-            print('')
-            print('******* Game Over *******')
-            print('Years of paitence has brought you to this moment.')
-            print('Your arrow flies true. With a mighty roar the Wumpus')
-            print('falls lifeless to the floor. But the Wumpus will get')
-            print('you next time.')
-            print('')
-            game['gameover'] = True
+        if not room_check.isdigit():
+            print('Not a valid input.')
             return
-        
+        if int(room_check) not in game[game['arrow_location']]:
+            ricochet = random.randint(1, 20)
+            if ricochet > 15:
+                print('You fire your arrow into the wall and it ricochets')
+                new_location = random.randint(1,4)
+                if new_location == 4 and game['player_location'] == game['arrow_location']:
+                    print('')
+                    print('******* Game Over *******')
+                    print('Upon firing randomly into the wall, your arrow flies back at you.')
+                    print('Unable to dodge it wounds you greviously. The smell of blood fills the air.')
+                    print('The Wumpus Has You.')
+                    game['gameover'] = True
+                    return
+                elif new_location == 4 and game['player_location'] != game['arrow_location']:
+                    new_location = random.randint(1,3)
+                    game['arrow_location'] = game['player_location'][new_location]
+            else:
+                print('Your arrow flies into the wall and shatters.')
+                game['arrows'] -= 1
+                print('You have ' + str(game['arrows']) + ' arrows remaining.')
+                return
         else:
-            print('You did not hit anything.')
-            if game['wumpus_location'] in game[game['player_location']]:
-                print('You hear shuffling, and the scent of wumpus grows fainter.')
-                new_wumpus_location = random.randint(1,19)
-                if new_wumpus_location >= game['player_location']:
-                    game['wumpus_location'] = new_wumpus_location + 1
-                else:
-                    game['wumpus_location'] = new_wumpus_location
+            game['arrow_location'] = int(room_check)
+            if game['arrow_location'] == game['wumpus_location']:
+                print('')
+                print('******* Game Over *******')
+                print('Years of paitence has brought you to this moment.')
+                print('Your arrow flies true. With a mighty roar the Wumpus')
+                print('falls lifeless to the floor. But the Wumpus will get')
+                print('you next time.')
+                print('')
+                game['gameover'] = True
+                return
+
+            elif game['arrow_location'] == game['player_location'] and a > 0:
+                print('')
+                print('******* Game Over *******')
+                print('Through some unfortunate miracle of chance your arrow flies back')
+                print('into the room you are standing in and greviously wounds you. The')
+                print('smell of blood fills the air.')
+                print('The Wumpus Has You.')
+                game['gameover'] = True
+                return
+            
+            elif game['arrow_location'] != game['wumpus_location'] and a != (int(arrow_range)-1):
+                print('The crooked arrow continues to fly')
+                game['arrow_location'] = int(room_check)
+
+            else:
+                print('You did not hit anything.')
+                if game['wumpus_location'] in game[game['player_location']]:
+                    print('You hear shuffling, and the scent of wumpus grows fainter.')
+                    new_wumpus_location = random.randint(1,19)
+                    if new_wumpus_location >= game['player_location']:
+                        game['wumpus_location'] = new_wumpus_location + 1
+                    else:
+                        game['wumpus_location'] = new_wumpus_location
 
         a += 1
                         
@@ -147,6 +197,9 @@ def move(game):
     #Second Main Action
     #needs to move through the map, and check to see if bad things happen in the next room
     move = input('Where to? ')
+    if not move.isdigit():
+        print('That is not a valid input')
+        return
 
     #Validate input to prevent players from moving to locations not currently available
     if int(move) not in game[game['player_location']]:
