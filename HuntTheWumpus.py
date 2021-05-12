@@ -34,6 +34,10 @@ def game():
         if action == 's':
             #take the shooting action
             shoot(game)
+            if game['gameover'] == True:
+                break
+            else:
+                game['gameover'] = arrow_count_check(game['arrows'])
         elif action == 'm':
             #take the moving action
             move(game)
@@ -104,23 +108,40 @@ def shoot(game):
     for a in range(arrow_range):
         room_check = input('Which room #: ')
         if int(room_check) == game['wumpus_location']:
-            print('You have slain the wumpus. Congratulations!')
+            print('')
+            print('******* Game Over *******')
+            print('Years of paitence has brought you to this moment.')
+            print('Your arrow flies true. With a mighty roar the Wumpus')
+            print('falls lifeless to the floor. But the Wumpus will get')
+            print('you next time.')
+            print('')
             game['gameover'] = True
             return
         
         else:
             print('You did not hit anything.')
-            if wumpus_location in game[player_location]:
+            if game['wumpus_location'] in game[game['player_location']]:
                 print('You hear shuffling, and the scent of wumpus grows fainter.')
                 new_wumpus_location = random.randint(1,19)
                 if new_wumpus_location >= game['player_location']:
                     game['wumpus_location'] = new_wumpus_location + 1
                 else:
                     game['wumpus_location'] = new_wumpus_location
-                        
-        arrows -= 1
-        print('You have ' + str(arrows) + ' arrows remaining.')
+
         a += 1
+                        
+    game['arrows'] -= 1
+    print('You have ' + str(game['arrows']) + ' arrows remaining.')
+
+def arrow_count_check(arrows):
+    if arrows == 0:
+        print('')
+        print('******* Game Over *******')
+        print('Upon firing your last arrow, the hunter becomes the hunted.')
+        print('The Wumpus Has You.')
+        return True
+    else:
+        return False
 
 def move(game):
     #Second Main Action
@@ -146,7 +167,9 @@ def hazards(game):
         wumpus_reaction = random.randint(1,2)
         if wumpus_reaction == 1:
             print('')
-            print('Game Over: You have angered the wumpus. It attacks.')
+            print('******* Game Over *******')
+            print('As you enter the room you realize only too late that it was a trap.')
+            print('The Wumpus Has You.')
             game['gameover'] = True
             return
         else:
@@ -154,7 +177,9 @@ def hazards(game):
             game['wumpus_location'] = random.randint(1,20)
     if (game['player_location'] == game['pit1_location']) or (game['player_location'] == game['pit2_location']):
         print('')
-        print('Game Over: You fell into a bottomless pit.')
+        print('******* Game Over *******')
+        print('You boldly enter the room, but where you expected floor there is none.')
+        print('The Wumpus Has You.')
         game['gameover'] = True
         return
 
